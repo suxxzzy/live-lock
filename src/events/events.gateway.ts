@@ -20,6 +20,12 @@ export class EventsGateway {
   server: Server;
 
   //절체 시작
+  @SubscribeMessage('getServerLockList')
+  async getServerLockList() {
+    return onServerLockList;
+  }
+
+  //절체 시작
   @SubscribeMessage('onServerLock')
   async onServerLock(@MessageBody() servername: string) {
     onServerLockList.push(servername);

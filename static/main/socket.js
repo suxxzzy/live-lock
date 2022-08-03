@@ -2,6 +2,32 @@
 document.addEventListener('DOMContentLoaded', function () {
   const socket = io('http://localhost:3000');
 
+  socket.on('connect', function () {
+    console.log('connected:접속한 누구나 볼 수 있어요');
+    socket.emit('getServerLockList', function (response) {
+      console.log(response, '새로 접속한 사람도 볼수있엏ㅎㅎ');
+      //버튼 목록을 필터링한다.
+      const buttonsArray = document.querySelectorAll('.transfer');
+      const locked = Array.from(buttonsArray).filter((btn) =>
+        response.includes(btn.previousElementSibling.innerText),
+      );
+      const unlocked = Array.from(buttonsArray).filter(
+        (btn) => !response.includes(btn.previousElementSibling.innerText),
+      );
+      console.log(locked, unlocked, '구분.');
+      //locked에 있는 것만 잠금처리
+      locked.forEach((btn) => {
+        btn.disabled = true;
+        btn.parentElement.childNodes[3].classList.add('locked');
+      });
+
+      unlocked.forEach((btn) => {
+        btn.disabled = false;
+        btn.parentElement.childNodes[3].classList.remove('locked');
+      });
+    });
+  });
+
   let selectedServer;
   //절체
   const buttonsArray = document.querySelectorAll('.transfer');
@@ -23,21 +49,9 @@ document.addEventListener('DOMContentLoaded', function () {
     }),
   );
 
-  socket.on('connect', function () {
-    console.log('Connected');
-  });
-
   socket.on('onServerLockListToClient', (response) => {
     //현재 있는 서버 목록 추출
     const servernames = document.querySelectorAll('span');
-    console.log(response, '왜안됨');
-
-    console.log(
-      Array.from(servernames).filter((servername) => {
-        return response.includes(servername.innerText);
-      }),
-    );
-
     //절체 막을 거
     Array.from(servernames)
       .filter((servername) => {
@@ -45,6 +59,7 @@ document.addEventListener('DOMContentLoaded', function () {
       })
       .forEach((servername) => {
         servername.parentNode.childNodes[1].disabled = true;
+        servername.parentNode.childNodes[3].classList.add('locked');
       });
 
     //절체 풀어줄거
@@ -54,6 +69,7 @@ document.addEventListener('DOMContentLoaded', function () {
       })
       .forEach((servername) => {
         servername.parentNode.childNodes[1].disabled = false;
+        servername.parentNode.childNodes[3].classList.remove('locked');
       });
   });
 

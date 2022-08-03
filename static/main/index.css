@@ -1,7 +1,16 @@
 li {
+  display: flex;
+  align-items: center;
   margin-bottom: 20px;
 }
 
 button {
   margin: 10px;
+}
+
+div.locked {
+  width: 30px;
+  height: 30px;
+  background-image: url('../lock.png');
+  background-size: 30px 30px;
 }

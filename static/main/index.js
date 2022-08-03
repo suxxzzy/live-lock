@@ -11,7 +11,8 @@ while (i <= 17) {
   const cancelbtn = document.createElement('button');
   cancelbtn.classList.add('cancel');
   cancelbtn.innerText = '취소';
-  li.append(span, btn, cancelbtn);
+  const lockIcon = document.createElement('div');
+  li.append(span, btn, cancelbtn, lockIcon);
   ul.append(li);
   i++;
 }
